@@ -1,2 +1,3 @@
-# SpringHibernate
-This has the spring framework with hibernate. It is not a web application
+# Docker collection
+
+This repo consist of the **dockerfile** and **docker-compose** files for the quick startup 

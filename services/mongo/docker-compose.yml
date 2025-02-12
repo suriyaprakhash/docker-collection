@@ -1,25 +1,39 @@
 services:
-  mongo:
-    container_name: mongo
-    image: mongo
-    extra_hosts: [ 'host.docker.internal:host-gateway' ]
-    restart: always
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: root
-    #   MONGO_INITDB_ROOT_PASSWORD: password
-    # volumes:
-    #   - ./local-data:/data # does not work on mac or windows because of the docker vm: https://docs.mongodb.com/manual/administration/production-notes/#fsync-on-directories
-    ports:
-      - 27017:27017
   mongo-express:
     container_name: mongo-express
     image: mongo-express
-    extra_hosts: [ 'host.docker.internal:host-gateway' ]
     restart: always
-    # environment:
-    #   ME_CONFIG_MONGODB_ADMINUSERNAME: root
-    #   ME_CONFIG_MONGODB_ADMINPASSWORD: password
     depends_on:
-      - mongo
+      - mongodb
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${DB_USERNAME}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${DB_PASSWORD}
+      - ME_CONFIG_BASICAUTH_USERNAME=suriya
+      - ME_CONFIG_BASICAUTH_PASSWORD=pass
     ports:
-      - 8888:8081
+      - 7000:8081
+    networks:
+      - mongo-compose-network
+
+  mongodb:
+    container_name: mongo
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+    # the mongo db data is saved under /data/db folder
+    # however, the mapped data volume could be found in wsl machine's /mnt/docker-desktop-disk/data/docker/volumes
+    # it will also be mapped against the current docker-collection directory's .ignore folder
+    volumes:
+      - ../../.ignore/mongo/database:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - mongo-compose-network
+
+networks:
+  mongo-compose-network:
+    driver: bridge

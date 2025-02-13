@@ -1,17 +1,17 @@
 services:
   mongo-express:
     container_name: mongo-express
-    image: mongo-express
+    image: mongo-express:1.0.2-18
     restart: always
     depends_on:
       - mongodb
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongo
       - ME_CONFIG_MONGODB_PORT=27017
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=${DB_USERNAME}
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=${DB_PASSWORD}
-      - ME_CONFIG_BASICAUTH_USERNAME=suriya
-      - ME_CONFIG_BASICAUTH_PASSWORD=pass
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${DB_USER}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${DB_PASS}
+      - ME_CONFIG_BASICAUTH_USERNAME=${ME_BASIC_USER}
+      - ME_CONFIG_BASICAUTH_PASSWORD=${ME_BASIC_PASS}
     ports:
       - 7000:8081
     networks:
@@ -19,11 +19,11 @@ services:
 
   mongodb:
     container_name: mongo
-    image: mongo
+    image: mongo:8.0.4
     restart: always
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASS}
     # the mongo db data is saved under /data/db folder
     # however, the mapped data volume could be found in wsl machine's /mnt/docker-desktop-disk/data/docker/volumes
     # it will also be mapped against the current docker-collection directory's .ignore folder

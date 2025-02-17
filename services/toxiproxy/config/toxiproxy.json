@@ -1,0 +1,14 @@
+[
+  {
+    "name": "pixie.suriyaprakhash.com-https",
+    "listen": "[::]:8800",
+    "upstream": "b9tl7fbxi2.execute-api.us-east-2.amazonaws.com:443",
+    "enabled": true
+  },
+  {
+    "name": "hugefile",
+    "listen": "[::]:8801",
+    "upstream": "host.docker.internal:8080",
+    "enabled": true
+  }
+]

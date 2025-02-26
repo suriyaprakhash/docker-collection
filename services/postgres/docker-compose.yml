@@ -1,0 +1,60 @@
+services:
+  # this is postgres db
+  postgres_db:
+    image: postgres:14.13-alpine3.20
+#    networks:
+#      - infra_nw_exposed
+    container_name: pgdb
+    hostname: postgresdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      #      - POSTGRES_DB=one
+      #      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+    # container - the postgres db data is saved under /var/lib/postgresql/data folder
+    # wsl - however, the mapped data volume could be found in wsl machine's /mnt/docker-desktop-disk/data/docker/volumes
+    # windows - it'll also be mapped against the current docker-collection directory's .ignore folder
+    volumes:
+      - ../../.ignore/postgres/postgres_db_data:/var/lib/postgresql/data
+  # runs admin console to view, monitor the postgres_db
+  pgadmin:
+    image: dpage/pgadmin4:8.11.0
+#    networks:
+#      - infra_nw_exposed
+    container_name: pgadmin4
+    hostname: dbconsole
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: contact@suriyaprakhash.com
+      PGADMIN_DEFAULT_PASSWORD: test
+    # container - the postgres db data is saved under /var/lib/postgresql/data folder
+    # wsl - however, the mapped data volume could be found in wsl machine's /mnt/docker-desktop-disk/data/docker/volumes
+    # windows - it'll also be mapped against the current docker-collection directory's .ignore folder
+    volumes:
+      - ../../.ignore/postgres/pgadmin_data:/var/lib/pgadmin
+
+# this volume is mapped inside the Docker WSL's filesystem
+#volumes:
+#  postgres_db_data:
+#    external: false
+#  pgadmin_data:
+#    external: false
+
+# this creates own subnet 172.18.0.x instead of the default 172.17.0.x which is default docker bridge network
+#networks:
+#  infra_nw_internal:
+#    # this network is only visible within the docker containers not to the host machine
+#    internal: true
+#    # the nw lifecycle is not maintained outside - meaning the nw will be created/deleted w.r.t this file
+#    external: false
+#    driver: bridge
+#  infra_nw_exposed:
+#    # this network is exposed to the host machine
+#    internal: false
+#    # the nw lifecycle is not maintained outside - meaning the nw will be created/deleted w.r.t this file
+#    external: false
+#    driver: bridge

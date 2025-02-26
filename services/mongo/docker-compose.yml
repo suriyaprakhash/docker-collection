@@ -24,9 +24,9 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${DB_PASS}
-    # the mongo db data is saved under /data/db folder
-    # however, the mapped data volume could be found in wsl machine's /mnt/docker-desktop-disk/data/docker/volumes
-    # it will also be mapped against the current docker-collection directory's .ignore folder
+    # container - the mongo db data is saved under /data/db folder
+    # wsl - however, the mapped data volume could be found in wsl machine's /mnt/docker-desktop-disk/data/docker/volumes
+    # windows - it'll also be mapped against the current docker-collection directory's .ignore folder
     volumes:
       - ../../.ignore/mongo/database:/data/db
     ports:

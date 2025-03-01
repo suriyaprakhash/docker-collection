@@ -7,6 +7,8 @@ services:
     container_name: pgdb
     hostname: postgresdb
     restart: always
+    cpu_count: 2
+    mem_limit: 2G
     ports:
       - "5432:5432"
     environment:

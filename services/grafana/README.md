@@ -22,3 +22,10 @@ to login.
   - http://zipkin:9411
 - Add prometheus (metrics, alerts)
   - http://prometheus:9090
+- Pyroscope (Profiling)
+  - http://pyroscope:4041 - the push agent
+  - http://pyroscope:4040 - the UI
+
+## Sample spring boot app
+
+[Check here](https://github.com/suriyaprakhash/springboot-instrumentation/tree/master) for a sample spring boot app using this 

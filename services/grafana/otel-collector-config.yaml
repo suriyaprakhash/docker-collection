@@ -1,0 +1,47 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'otel-collector'
+          static_configs:
+            - targets: ['0.0.0.0:55680'] # Scrape the collector itself
+
+processors:
+  batch:
+
+exporters:
+  debug: # Changed from logging to debug
+    loglevel: debug
+  zipkin:
+    endpoint: "http://zipkin:9411/api/v2/spans"
+  loki:
+    endpoint: "http://loki:3100/loki/api/v1/push"
+    labels:
+      job: "otel-collector-logs"
+  prometheus:
+    endpoint: "0.0.0.0:9090"
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [zipkin, logging] # send traces to zipkin and log them
+    metrics:
+      receivers: [otlp, prometheus]
+      processors: [batch]
+      exporters: [prometheus, logging, loki] # send metrics to promethus and loki and log them
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [loki, logging] # send logs to loki and log them
+
+extensions:
+  prometheus_scraper:
+    collection_interval: 10s

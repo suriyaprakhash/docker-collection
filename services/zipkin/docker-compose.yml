@@ -1,0 +1,12 @@
+services:
+  zipkin:
+    image: openzipkin/zipkin:latest
+    ports:
+      - "9411:9411"
+    environment:
+      STORAGE_TYPE: mem # Or cassandra, elasticsearch, mysql, etc.
+    networks:
+      - zipkin-network
+
+networks:
+  zipkin-network:

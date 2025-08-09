@@ -1,0 +1,170 @@
+{
+  "name": "Simple Form AI Chat",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "AI Chatbot",
+        "formDescription": "Enter your question",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Username",
+              "placeholder": "Enter your username"
+            },
+            {
+              "fieldLabel": "Prompt",
+              "fieldType": "textarea",
+              "placeholder": "Enter you question",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -432,
+        -144
+      ],
+      "id": "2dfaebd3-c0f0-4eb6-8172-44c1d9b920f5",
+      "name": "On form submission",
+      "webhookId": "2cdb7619-3a1e-445d-888e-a23773302974"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        96
+      ],
+      "id": "f802fb46-eb45-4fa7-8f65-c3590714b57f",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "xs8iZvceDi7nGsdH",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Prompt }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        -144
+      ],
+      "id": "d1f004be-11b9-4a7c-b5e1-4fda4cf0d770",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Thanks for using our AI",
+        "completionMessage": "={{ $json.output }}\n\n<a href=\"http://localhost:5678/form/2cdb7619-3a1e-445d-888e-a23773302974\"> Continue </a>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        128,
+        -112
+      ],
+      "id": "c0cf86d3-1047-4e0a-aa20-b5ffd4ab9a29",
+      "name": "Form",
+      "webhookId": "cd664fe3-bb06-4816-a79c-6157a745df1f"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('On form submission').item.json.Username }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        -144,
+        208
+      ],
+      "id": "dab469aa-3afe-49b7-9daf-10cf6387c25a",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "9gUDgIi8O5dGUDzt",
+          "name": "Redis account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "09fcf7d4-484d-402c-9e9f-9f68b1fe408c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "73fb496f785ef2c43c8919755d18b774262fcb79950925fce46226d693d66b30"
+  },
+  "id": "ilYwmBh6IhzgNNth",
+  "tags": []
+}

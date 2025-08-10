@@ -5,6 +5,8 @@ services:
     image: redis:latest
     ports:
       - 6379:6379
+    volumes:
+      - ../../.ignore/redis/redis-data:/data # This line mounts the named volume to the /data directory in the container
   redis-insight:
     image: redis/redisinsight:latest
     ports:

@@ -13,7 +13,7 @@ services:
       - ME_CONFIG_BASICAUTH_USERNAME=${ME_BASIC_USER}
       - ME_CONFIG_BASICAUTH_PASSWORD=${ME_BASIC_PASS}
     ports:
-      - 7000:8081
+      - 7001:8081
     networks:
       - mongo-compose-network
 

@@ -6,8 +6,8 @@ services:
     volumes:
       - loki-data:/loki
 #      - ./loki-config.yaml:/etc/loki/local-config.yaml
-#      # ^^^^^^^^^^^^^^^^^^ references host path
-#      #                    relative to docker-compose.yml file
+#      references host path
+#      relative to docker-compose.yml file
     networks:
       - grafana-network
 
@@ -45,18 +45,25 @@ services:
     networks:
       - grafana-network
 
-#  otel-collector:
-#    image: otel/opentelemetry-collector-contrib:latest
-#    ports:
-#      - "4317:4317"  # OTLP gRPC receiver
-#      - "4318:4318"  # OTLP HTTP receiver
-#      - "55680:55680" # Prometheus receiver
-#      # Add more ports as needed for other receivers/exporters
-#    volumes:
-#      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
-#    command: ["--config=/etc/otel-collector-config.yaml"]
-#    networks:
-#      - grafana-network
+  # OpenTelemetry Collector Service
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    ports:
+      # OTLP Receivers (Used by application SDKs to send data)
+      - "4317:4317"  # OTLP gRPC receiver
+      - "4318:4318"  # OTLP HTTP receiver
+      # Other Receivers (e.g., for Prometheus scraping or Zipkin/Jaeger inputs)
+      - "55680:55680" # Prometheus receiver
+    volumes:
+      # Refer 'otel-collector-config.yaml' for the config
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    networks:
+      - grafana-network
+    depends_on:
+      - loki
+      - zipkin
+      - prometheus # Add other backends here if the collector exports to them
 
   grafana:
     image: grafana/grafana:latest
@@ -68,6 +75,7 @@ services:
       - loki
       - zipkin
       - prometheus
+      - otel-collector # Added dependency
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin

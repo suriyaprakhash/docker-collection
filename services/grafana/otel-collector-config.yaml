@@ -13,7 +13,12 @@ receivers:
 #            - targets: ['0.0.0.0:55680'] # Scrape the collector itself
 
 processors:
-  batch:
+  attributes/add_userId_field:
+    actions:
+      # The value "userId" here must match the key you used in MDC
+      - key: userId
+        value: "%{userId}"
+        action: insert
 
 exporters:
   zipkin:
@@ -29,15 +34,13 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-#      processors: [batch]
       exporters: [zipkin] # send traces to zipkin and log them
     metrics:
       receivers: [otlp]
-#      processors: [batch]
       exporters: [prometheus] # send metrics to promethus and loki and log them (this logs metrics in loki in log format)
     logs:
       receivers: [otlp]
-#      processors: [batch]
+      processors: [attributes/add_userId_field] # check the corresponding processor
       exporters: [otlphttp] # send logs to loki and log them
 
 #extensions:

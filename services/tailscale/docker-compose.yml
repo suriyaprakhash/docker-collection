@@ -1,0 +1,12 @@
+services:
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: nas-tailscale
+    hostname: nas-tailscale
+    environment:
+      - TS_AUTHKEY={put your key here}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_EXTRA_ARGS=--advertise-exit-node
+    restart: unless-stopped
+    volumes:
+      - ./../.ignore/tailscale/tailscale_data:/var/lib/tailscale

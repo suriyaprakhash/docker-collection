@@ -1,0 +1,29 @@
+services:
+  solace:
+    image: solace/solace-pubsub-standard:latest
+    container_name: solace-broker
+    hostname: solace-broker
+    shm_size: '1g'  # Added this back - Solace often fails to boot without it
+    ulimits:
+      core: -1
+      nofile:
+        soft: 2448
+        hard: 1048576
+    environment:
+      - ACCEPT_EULA=yes
+      - username_admin_globalaccesslevel=admin
+      - username_admin_password=admin
+    ports:
+      - "8080:8080"   # Admin Console
+      - "55556:55555" # Spring Boot SMF
+      - "9000:9000"   # REST
+    volumes:
+      # Use the absolute or relative path to your local folder
+      - ../../.ignore/solace/solace_data:/var/lib/solace
+    networks:
+      - solace-net
+    restart: always
+
+networks:
+  solace-net:
+    driver: bridge

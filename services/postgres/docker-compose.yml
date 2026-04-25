@@ -1,7 +1,7 @@
 services:
   # this is postgres db
   postgres_db:
-    image: postgres:14.13-alpine3.20
+    image: postgres:latest
 #    networks:
 #      - infra_nw_exposed
     container_name: pgdb
@@ -22,7 +22,7 @@ services:
       - ../../.ignore/postgres/postgres_db_data:/var/lib/postgresql/data
   # runs admin console to view, monitor the postgres_db
   pgadmin:
-    image: dpage/pgadmin4:8.11.0
+    image: dpage/pgadmin4:latest
 #    networks:
 #      - infra_nw_exposed
     container_name: pgadmin4

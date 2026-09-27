@@ -6,4 +6,4 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./../.ignore/mysql/mysql_db_data:/var/lib/mysql
+      - /Users/suriya/main/ws/github/docker-collection/.ignore/mysql/mysql_db_data:/var/lib/mysql

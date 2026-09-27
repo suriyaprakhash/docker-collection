@@ -1,0 +1,27 @@
+services:
+  arcane:
+    image: ghcr.io/getarcaneapp/manager:latest
+    container_name: arcane
+    ports:
+      - "3552:3552"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "arcane-data:/app/data"
+    environment:
+      - ENCRYPTION_KEY=your-32-char-encryption-key-from-my-opinion
+      - TZ=UTC
+    networks:
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.arcane.rule=Host(`arcane.homelabs.suriyaprakhash.com`)"
+      - "traefik.http.routers.arcane.entrypoints=web"
+      - "traefik.http.services.arcane.loadbalancer.server.port=3552"
+    restart: unless-stopped
+
+networks:
+  traefik-net:
+    external: true
+
+volumes:
+  arcane-data:

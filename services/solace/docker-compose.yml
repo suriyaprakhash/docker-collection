@@ -1,8 +1,8 @@
 services:
   solace:
     image: solace/solace-pubsub-standard:latest
-    container_name: solace-broker
-    hostname: solace-broker
+    container_name: solace
+    hostname: solace
     shm_size: '1g'  # Added this back - Solace often fails to boot without it
     ulimits:
       core: -1
@@ -14,7 +14,7 @@ services:
       - username_admin_globalaccesslevel=admin
       - username_admin_password=admin
     ports:
-      - "8080:8080"   # Admin Console
+      - "8081:8080"   # Admin Console
       - "55556:55555" # Spring Boot SMF
       - "9000:9000"   # REST
       - "8008:8008"   # Web socket
@@ -22,9 +22,17 @@ services:
       # Use the absolute or relative path to your local folder
       - ../../.ignore/solace/solace_data:/var/lib/solace
     networks:
-      - solace-net
+#      - solace-net
+      - traefik-net
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.solace.rule=Host(`solace.homelabs.suriyaprakhash.com`)"
+      - "traefik.http.routers.solace.entrypoints=web"
+      - "traefik.http.services.solace.loadbalancer.server.port=8080"
 
 networks:
-  solace-net:
-    driver: bridge
+#  solace-net:
+#    driver: bridge
+  traefik-net:
+    external: true

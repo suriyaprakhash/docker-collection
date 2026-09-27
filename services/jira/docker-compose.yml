@@ -10,4 +10,4 @@ services:
       - ATL_TOMCAT_SCHEME=https
       - ATL_TOMCAT_SECURE=true
     volumes:
-      - ./../.ignore/jira/jira_data:/var/atlassian/application-data/jira
+      - /Users/suriya/main/ws/github/docker-collection/.ignore/jira/jira_data:/var/atlassian/application-data/jira

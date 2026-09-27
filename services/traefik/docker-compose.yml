@@ -7,28 +7,24 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
+      # You can keep websecure if you want local HTTPS, but for simple VPS forwarding, port 80 is easiest.
       - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=contact@suriyaprakhash.com"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "/Users/suriya/main/ws/github/docker-collection/.ignore/traefik/letsencrypt:/letsencrypt"
     networks:
       - traefik-net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik-dash.rule=Host(`traefik.homelabs.suriyaprakhash.com`)"
-      - "traefik.http.routers.traefik-dash.entrypoints=websecure"
-      - "traefik.http.routers.traefik-dash.tls=true"
-      - "traefik.http.routers.traefik-dash.tls.certresolver=myresolver"
-      - "traefik.http.services.traefik-dash.loadbalancer.server.port=8080"
+      # 1. Listen on the standard 'web' (port 80) entrypoint for traffic coming from the VPS
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.homelabs.suriyaprakhash.com`)"
+      # 2. REMOVE the certresolver and tls=true lines so Traefik doesn't look for its own cert
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
 
 networks:
   traefik-net:
     external: true
-

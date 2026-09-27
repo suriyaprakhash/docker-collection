@@ -1,3 +1,4 @@
 .idea
 .ignore
 docker-collection.iml
+.DS_Store

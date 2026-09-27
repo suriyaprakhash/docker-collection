@@ -17,6 +17,7 @@ services:
       - "8080:8080"   # Admin Console
       - "55556:55555" # Spring Boot SMF
       - "9000:9000"   # REST
+      - "8008:8008"   # Web socket
     volumes:
       # Use the absolute or relative path to your local folder
       - ../../.ignore/solace/solace_data:/var/lib/solace

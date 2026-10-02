@@ -1,0 +1,28 @@
+services:
+  adguardhome:
+    image: adguard/adguardhome:latest
+    container_name: adguardhome
+    restart: unless-stopped
+    # Use the host's actual network stack instead of a bridge or macvlan
+    network_mode: host
+    volumes:
+      - ./workdir:/opt/adguardhome/work
+      - ./confdir:/opt/adguardhome/conf
+    
+    # NOTE ON PORTS IN HOST MODE:
+    # Because 'network_mode: host' is active, you cannot use the traditional "ports:" mapping section.
+    # The container will automatically and directly bind to these specific ports on your UGREEN NAS IP:
+    # 
+    # Core Services:
+    #   - 53/tcp & 53/udp     -> DNS Queries (Requires stopping UGREEN's internal dnsmasq via SSH)
+    #   - 3000/tcp            -> Initial Setup Wizard (Closes automatically after setup)
+    # 
+    # Web Dashboard / Encryption Protocols:
+    #   - 80/tcp              -> Default Web Panel HTTP (Change this to 9080/8082 in the setup wizard!)
+    #   - 443/tcp & 443/udp   -> Default Web Panel HTTPS / DNS over HTTPS (DoH)
+    #   - 853/tcp             -> DNS over TLS (DoT)
+    #   - 784/udp & 853/udp   -> DNS over QUIC
+    #   - 5443/tcp & 5443/udp -> DNSCrypt
+    # 
+    # Built-in DHCP Server Features (Optional):
+    #   - 67/udp & 68/udp     -> AdGuard DHCP Server (Only if you disable

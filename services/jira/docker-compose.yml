@@ -3,11 +3,17 @@ services:
     image: atlassian/jira-software:latest
     container_name: jira
     ports:
-      - "8080:8080"
+      - "8051:8080"
     environment:
-      - ATL_PROXY_NAME=suriyas-mac-studio.tail71314f.ts.net
+#      - ATL_PROXY_NAME=suriyas-mac-studio.tail71314f.ts.net
+      - ATL_PROXY_NAME=jira.homelabs.suriyaprakhash.com
       - ATL_PROXY_PORT=443
       - ATL_TOMCAT_SCHEME=https
       - ATL_TOMCAT_SECURE=true
     volumes:
       - /Users/suriya/main/ws/github/docker-collection/.ignore/jira/jira_data:/var/atlassian/application-data/jira
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jira.rule=Host(`jira.homelabs.suriyaprakhash.com`)"
+      - "traefik.http.routers.jira.entrypoints=web"
+      - "traefik.http.services.jira.loadbalancer.server.port=8080"

@@ -17,7 +17,7 @@ services:
     image: docker.io/library/postgres:16-alpine
     restart: unless-stopped
     volumes:
-    - database:/var/lib/postgresql/data
+    - ./database:/var/lib/postgresql/data
   server:
     command: server
     depends_on:
@@ -58,7 +58,6 @@ services:
     shm_size: 512mb
     user: root
     volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
     - ./data:/data
     - ./certs:/certs
     - ./custom-templates:/templates

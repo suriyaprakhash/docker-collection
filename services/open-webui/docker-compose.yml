@@ -1,0 +1,15 @@
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    # having this as host mode becasue, it tryies to reach to hugging face - like outbound which is currently confusing with bridge network
+    network_mode: host
+    environment:
+      - PORT=8085
+      - OPENAI_API_BASE_URL=put-your-openai-api-base-url-here
+      - OPENAI_API_KEY=lm-studio
+      - ENABLE_OLLAMA_API=False
+      - WEBUI_SECRET_KEY=put-your-secret-key-here
+    volumes:
+      - ./open-webui:/app/backend/data
+    restart: unless-stopped

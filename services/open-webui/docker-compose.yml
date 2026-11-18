@@ -6,9 +6,9 @@ services:
     network_mode: host
     environment:
       - PORT=8085
-      - OPENAI_API_BASE_URL=put-your-openai-api-base-url-here
-      - OPENAI_API_KEY=lm-studio
-      - ENABLE_OLLAMA_API=False
+      # - OPENAI_API_BASE_URL=put-your-openai-api-base-url-here
+      # - OPENAI_API_KEY=lm-studio
+      # - ENABLE_OLLAMA_API=False
       - WEBUI_SECRET_KEY=put-your-secret-key-here
     volumes:
       - ./open-webui:/app/backend/data
